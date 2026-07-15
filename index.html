@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>ENY-WISE GRAPHICS AND PRINT | Premium Brand Solutions</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f9f9f9; color: #333; line-height: 1.6; scroll-behavior: smooth; }
+        a { text-decoration: none; color: inherit; }
+        
+        /* Navigation & Utilities Bar */
+        header { background-color: #ffffff; padding: 15px 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .logo { font-size: 22px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; color: #1e272e; cursor: pointer; }
+        .nav-right { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .nav-links { list-style: none; display: flex; gap: 20px; font-weight: 600; }
+        .nav-links a:hover, .nav-links a.active { color: #ff4757; }
+        
+        /* Search Box Utility */
+        .search-wrapper { position: relative; display: flex; align-items: center; }
+        .search-input { padding: 8px 12px; border: 1px solid #ced6e0; border-radius: 20px; font-size: 14px; width: 220px; transition: 0.3s; outline: none; }
+        .search-input:focus { width: 280px; border-color: #ff4757; }
+
+        /* View States System Router */
+        .view-state { display: none; }
+        .view-state.active-view { display: block; }
+
+        /* Hero Landing Component */
+        .hero { 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+            height: 65vh; display: flex; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px;
+        }
+        .hero-content h1 { font-size: 42px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-content p { font-size: 18px; margin-bottom: 25px; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .cta-btn { background-color: #ff4757; color: white; padding: 12px 30px; font-weight: bold; border-radius: 4px; transition: 0.3s; border: none; cursor: pointer; display: inline-block; }
+        .cta-btn:hover { background-color: #e84118; }
+
+        /* General Section Blocks Typography */
+        .section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+        .section-title { text-align: center; margin-bottom: 40px; font-size: 30px; text-transform: uppercase; letter-spacing: 1px; color: #1e272e; position: relative; }
+        .section-title::after { content: ''; display: block; width: 50px; height: 3px; background: #ff4757; margin: 10px auto 0; }
+
+        /* Category Filter Row */
+        .category-filter-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 35px; flex-wrap: wrap; }
+        .filter-pill { padding: 8px 20px; background: #eee; border-radius: 25px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.3s; border: none; }
+        .filter-pill.active, .filter-pill:hover { background: #ff4757; color: white; }
+
+        /* Adaptive Media Cards Grid Core Framework */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .product-card { background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; height: 100%; cursor: pointer; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .product-image-container { width: 100%; height: 280px; background-color: #f1f2f6; overflow: hidden; position: relative; }
+        .product-media { width: 100%; height: 100%; object-fit: cover; }
+        .product-info { padding: 20px; text-align: center; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+        .product-name { font-size: 17px; margin-bottom: 8px; font-weight: 600; color: #2f3542; }
+        .product-price { color: #ff4757; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+        .buy-btn { display: inline-block; width: 100%; padding: 10px; background-color: #2f3542; color: #fff; font-weight: bold; border-radius: 4px; transition: 0.3s; border: none; cursor: pointer; margin-top: auto; }
+        .buy-btn:hover { background-color: #ff4757; }
+
+        /* Dedicated Details Interface Screen View styling */
+        .details-layout { display: flex; gap: 40px; flex-wrap: wrap; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .details-media-gallery { flex: 1; min-width: 300px; }
+        .details-main-stage { width: 100%; height: 450px; background: #f1f2f6; border-radius: 6px; overflow: hidden; margin-bottom: 15px; }
+        .details-info-pane { flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center; }
+        .details-tag { display: inline-block; align-self: flex-start; padding: 4px 12px; background: #f1f2f6; border-radius: 15px; font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; color: #57606f; }
+        .details-title { font-size: 32px; color: #2f3542; margin-bottom: 10px; font-weight: 700; line-height: 1.2; }
+        .details-price { font-size: 24px; color: #ff4757; font-weight: bold; margin-bottom: 20px; }
+        .details-description { color: #57606f; margin-bottom: 25px; font-size: 15px; border-top: 1px dashed #eee; padding-top: 15px; white-space: pre-line; }
+
+        /* Contact & Footer Parameters Grid Layout */
+        footer { background-color: #1e2124; color: #fff; padding: 60px 20px 20px; margin-top: 80px; border-top: 4px solid #ff4757; }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px; }
+        .footer-col h3 { margin-bottom: 20px; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; color: #ff4757; }
+        .footer-links-list { list-style: none; }
+        .footer-links-list li { margin-bottom: 12px; font-size: 14px; color: #ccc; display: flex; align-items: flex-start; gap: 8px; }
+        .footer-links-list a:hover { color: #ff4757; text-decoration: underline; }
+        .map-btn-inline { display: inline-flex; align-items: center; gap: 6px; background: #ff4757; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; cursor: pointer; border: none; transition: 0.3s; }
+        .map-btn-inline:hover { background: #e84118; }
+        .copyright { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #3e4450; font-size: 13px; color: #747d8c; }
+
+        /* Checkout Layer Overlay Elements Styling */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .checkout-modal { background: white; width: 100%; max-width: 520px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; animation: fIn 0.3s ease; }
+        .modal-header { background: #2f3542; color: white; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .modal-close { cursor: pointer; font-size: 24px; color: #ccc; background: none; border: none; }
+        .modal-body { padding: 20px; max-height: 75vh; overflow-y: auto; }
+        .checkout-summary-box { background: #f8f9fa; border: 1px solid #ced6e0; padding: 12px; border-radius: 6px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; }
+        .summary-thumb { width: 65px; height: 65px; object-fit: cover; border-radius: 4px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 12px; color: #57606f; }
+        .form-control { width: 100%; padding: 8px 12px; border: 1px solid #ced6e0; border-radius: 4px; font-size: 14px; outline: none; }
+        .form-control:focus { border-color: #ff4757; }
+        .form-row { display: flex; gap: 12px; }
+        .form-row .form-group { flex: 1; }
+        
+        /* Floating Groq Assistant Styling Rules */
+        #ai-widget-trigger { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: #ff4757; border-radius: 50%; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1500; font-size: 24px; color: white; border: none; transition: 0.3s; }
+        #ai-widget-trigger:hover { transform: scale(1.05); background: #e84118; }
+        .ai-chat-window { position: fixed; bottom: 95px; right: 25px; width: 350px; height: 480px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; flex-direction: column; z-index: 1500; overflow: hidden; border: 1px solid #ced6e0; animation: fIn 0.3s ease; }
+        .ai-chat-window.active { display: flex; }
+        .ai-header { background: #2f3542; color: white; padding: 12px 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .ai-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f1f2f6; }
+        .msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
+        .msg.user { background: #ff4757; color: white; align-self: flex-end; border-bottom-right-radius: 1px; }
+        .msg.bot { background: white; color: #333; align-self: flex-start; border-bottom-left-radius: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .ai-input-area { padding: 10px; border-top: 1px solid #ced6e0; display: flex; gap: 8px; background: white; }
+        .ai-input-area input { flex: 1; padding: 8px 12px; border: 1px solid #ced6e0; border-radius: 4px; outline: none; font-size: 13px; }
+        .typing-dots { display: inline-flex; gap: 3px; padding: 3px; }
+        .typing-dots span { width: 5px; height: 5px; background: #888; border-radius: 50%; animation: blk 1.4s infinite both; }
+        .typing-dots span:nth-child(2) { animation-delay: .2s; }
+        .typing-dots span:nth-child(3) { animation-delay: .4s; }
+
+        @keyframes blk { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
+        @keyframes fIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @media(max-width: 768px) { .details-layout { flex-direction: column; } .details-main-stage { height: 300px; } .nav-container { justify-content: center; text-align: center; } .nav-right { width: 100%; justify-content: center; } }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar Module Layer -->
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="navigateToViewState('home')">ENY-WISE GRAPHICS</div>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="#" id="link-view-home" class="active" onclick="navigateToViewState('home')">Home</a></li>
+                    <li><a href="#" id="link-view-marketplace" onclick="navigateToViewState('marketplace')">Marketplace</a></li>
+                </ul>
+                <div class="search-wrapper">
+                    <input type="text" class="search-input" id="sys-search-bar" placeholder="Search products or services..." oninput="executeGlobalSearchIndexing()">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- VIEW STATE: HOME LANDING SCREEN PANEL -->
+    <div id="view-home" class="view-state active-view">
+        <section class="hero" id="hero-canvas-node">
+            <div class="hero-content">
+                <h1 id="hero-main-title">Creative Design & Printing</h1>
+                <p id="hero-sub-para">High-quality flyers, modern logos, and corporate branding solutions delivered professionally.</p>
+                <button class="cta-btn" id="hero-action-trigger" onclick="navigateToViewState('marketplace')">Explore Marketplace</button>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <h2 class="section-title">Core Competencies</h2>
+            <div class="category-filter-row" style="margin-top: 30px;">
+                <button class="filter-pill active" onclick="navigateToViewState('marketplace', 'all')">All Offerings</button>
+                <button class="filter-pill" onclick="navigateToViewState('marketplace', 'service')">Design Services</button>
+                <button class="filter-pill" onclick="navigateToViewState('marketplace', 'product')">Physical Products</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- VIEW STATE: SEPARATED MARKETPLACE BROWSER SCREEN -->
+    <div id="view-marketplace" class="view-state section-container">
+        <h2 class="section-title" id="marketplace-display-title">Products & Services</h2>
+        <div class="category-filter-row">
+            <button class="filter-pill active" id="pill-filter-all" onclick="setMarketplacePillFilter('all')">View All</button>
+            <button class="filter-pill" id="pill-filter-service" onclick="setMarketplacePillFilter('service')">Services Only</button>
+            <button class="filter-pill" id="pill-filter-product" onclick="setMarketplacePillFilter('product')">Products Only</button>
+        </div>
+        <div class="product-grid" id="market-cards-grid-root">
+            <!-- Programmatic injection loop point -->
+        </div>
+    </div>
+
+    <!-- VIEW STATE: TARGET DETAILS PAGE PANE LINK -->
+    <div id="view-details" class="view-state section-container">
+        <button class="filter-pill" style="margin-bottom: 25px; background: #2f3542; color: white;" onclick="navigateToViewState('marketplace')">← Return to Catalog</button>
+        <div class="details-layout" id="details-view-root">
+            <!-- Programmatic detail frame content loop injection target -->
+        </div>
+    </div>
+
+    <!-- FOOTER MATRIX LAYOUT COMPONENT -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3 id="foot-brand-label">ENY-WISE GRAPHICS AND PRINT</h3>
+                <p style="font-size: 14px; color: #aaa; line-height: 1.5;" id="foot-desc-fallback">Your premium workspace for custom graphics design, prints layout rendering, and holistic business corporate branding projects implementation schedules.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Contact Coordination Channels</h3>
+                <ul class="footer-links-list">
+                    <li>📞 Call Support: <a href="tel:08149830278" id="foot-link-call" style="font-weight:600; color:#ff4757;">08149830278</a></li>
+                    <li>💬 WhatsApp Live: <a href="https://wa.me/2349025213498" target="_blank" id="foot-link-wa" style="font-weight:600; color:#2ed573;">09025213498</a></li>
+                    <li>✉️ Email Mailbox: <a href="mailto:enywise652@gmail.com" id="foot-link-email">enywise652@gmail.com</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Corporate Location</h3>
+                <ul class="footer-links-list">
+                    <li>
+                        <span id="foot-text-address" style="cursor:pointer; font-weight:500;" onclick="triggerGoogleMapsRedirect()">Ajibesin Street, Isale Olupo, Ogidi, Ilorin, Kwara State, Nigeria</span>
+                    </li>
+                </ul>
+                <button class="map-btn-inline" onclick="triggerGoogleMapsRedirect()">🗺️ View On Google Maps</button>
+            </div>
+        </div>
+        <div class="copyright" id="foot-text-copy">
+            &copy; 2026 ENY-WISE GRAPHICS AND PRINT. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- SECURE INTERFACE MODAL FRAME -->
+    <div class="modal-overlay" id="checkout-modal-root">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <span>Configure Order Specifications Request</span>
+                <button class="modal-close" onclick="closeCheckoutOverlay()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="checkout-summary-box">
+                    <div id="modal-thumb-box" style="width:65px; height:65px; background:#eee; overflow:hidden; border-radius:4px;"></div>
+                    <div>
+                        <h4 id="modal-summary-name" style="font-size:15px; color:#2f3542;">Item Title</h4>
+                        <p id="modal-summary-price" style="color:#ff4757; font-weight:bold; font-size:14px; margin-top:2px;">₦0.00</p>
+                    </div>
+                </div>
+                <form id="checkout-form-element" onsubmit="dispatchWhatsAppMessagePayload(event)">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="form-cust-name" class="form-control" required></div>
+                    <div class="form-group"><label>Phone Number Channel *</label><input type="tel" id="form-cust-phone" class="form-control" placeholder="e.g. +234..." required></div>
+                    <div class="form-group"><label>Email Address (Optional)</label><input type="email" id="form-cust-email" class="form-control"></div>
+                    <div class="form-group"><label>Delivery or Logistics Destination Address *</label><input type="text" id="form-cust-address" class="form-control" required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>State *</label><input type="text" id="form-cust-state" class="form-control" required></div>
+                        <div class="form-group"><label>City *</label><input type="text" id="form-cust-city" class="form-control" required></div>
+                    </div>
+                    <div class="form-group" id="form-qty-group-toggle"><label>Quantity Demanded *</label><input type="number" id="form-cust-qty" class="form-control" value="1" min="1" required></div>
+                    <div class="form-group"><label>Additional Configuration Notes / Styling Requests</label><textarea id="form-cust-notes" class="form-control" rows="3" placeholder="Specify colors, text alignments, dimensions..."></textarea></div>
+                    <button type="submit" class="buy-btn" style="padding:12px; font-size:15px; margin-top:10px;">Transmit Order Specifications to WhatsApp</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI ASSISTANT OVERLAY COMPONENT -->
+    <button id="ai-widget-trigger" onclick="toggleAiAssistantWindow()">🤖</button>
+    <div class="ai-chat-window" id="ai-chat-window-root">
+        <div class="ai-header">
+            <span>Automated Business Analyst Node</span>
+            <button style="background:none; border:none; color:white; cursor:pointer; font-size:18px;" onclick="toggleAiAssistantWindow()">&times;</button>
+        </div>
+        <div class="ai-messages" id="ai-messages-scroller-track">
+            <div class="msg bot" id="ai-first-msg">Hello! I am your ENY-WISE automated assistant engine. Ask me about our design layout services, pricing tiers, physical prints delivery workflows, or item metrics!</div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" id="ai-user-prompt-input" placeholder="Inquire about items or contacts..." onkeypress="handleAiInterfaceKeyPress(event)">
+            <button class="buy-btn" style="width:auto; padding:0 15px; margin:0;" onclick="processCustomerAiRequest()">Ask</button>
+        </div>
+    </div>
+
+    <!-- SYSTEM SCRIPTING ENGINE -->
+    <script>
+        const DOMAIN_SHARED_STORAGE_KEY = 'ENY_WISE_APP_STATE_DATA';
+
+        // Defensive HTML escaping helper
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        
+        const BUSINESS_DEFAULT_SCHEMA = {
+            logoText: "ENY-WISE GRAPHICS AND PRINT",
+            navItem1: "Home", navItem2: "Marketplace", navItem3: "Contact",
+            heroTitle: "Creative Design & Printing",
+            heroSubtitle: "High-quality flyers, modern logos, and corporate branding solutions delivered professionally.",
+            heroBg: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=1200&q=80",
+            heroBtnText: "Explore Marketplace",
+            servicesTitle: "Products & Services",
+            footerHeadline: "ENY-WISE GRAPHICS AND PRINT",
+            footerEmail: "enywise652@gmail.com",
+            footerPhone: "08149830278",
+            footerWhatsapp: "09025213498",
+            footerAddress: "Ajibesin Street, Isale Olupo, Ogidi, Ilorin, Kwara State, Nigeria.",
+            copyrightBlock: "© 2026 ENY-WISE GRAPHICS AND PRINT. All Rights Reserved.",
+            cloudinaryCloudName: "dq7lo9prp",
+            cloudinaryUploadPreset: "enywise",
+            groqApiKey: "",
+            catalogArray: [
+                { id: "fallback-1", name: "Corporate Business Flyer Design", price: "₦15,000", desc: "Premium custom graphics flyer design structured tailored explicitly to maximize social conversion values matrices. Rendered in high-resolution printing formats vectors profiles.", img: "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=500&q=80", type: "service" },
+                { id: "fallback-2", name: "Premium Identity Logo Design", price: "₦35,000", desc: "Corporate standard geometric emblem vector sets detailing tailored identity alignment variables representation patterns.", img: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=500&q=80", type: "service" }
+            ]
+        };
+
+        let RUNTIME_STATE_DATA = {};
+        let CURRENT_MARKETPLACE_PILL_FILTER = 'all';
+        let IN_FLIGHT_CHECKOUT_RECORD_OBJECT = null;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            synchronizeApplicationLayerState();
+            setupSearchEngineBoundListeners();
+        });
+
+        function synchronizeApplicationLayerState() {
+            let rawBuffer = null;
+            try {
+                rawBuffer = localStorage.getItem(DOMAIN_SHARED_STORAGE_KEY);
+            } catch(storageReadErr) {
+                rawBuffer = null;
+            }
+
+            if(rawBuffer) {
+                try { 
+                    RUNTIME_STATE_DATA = JSON.parse(rawBuffer); 
+                } catch(err) { 
+                    RUNTIME_STATE_DATA = JSON.parse(JSON.stringify(BUSINESS_DEFAULT_SCHEMA)); 
+                }
+            } else {
+                RUNTIME_STATE_DATA = JSON.parse(JSON.stringify(BUSINESS_DEFAULT_SCHEMA));
+                try {
+                    localStorage.setItem(DOMAIN_SHARED_STORAGE_KEY, JSON.stringify(RUNTIME_STATE_DATA));
+                } catch(storageWriteErr) {
+                    // Fail-soft for sandbox environments or restricted browsers
+                }
+            }
+            bindStateParametersToDocumentDOM();
+        }
+
+        function bindStateParametersToDocumentDOM() {
+            const dataBlock = RUNTIME_STATE_DATA;
+            
+            // Layout typography injection paths
+            if(dataBlock.logoText) document.querySelector('.logo').innerText = dataBlock.logoText;
+            if(dataBlock.heroTitle) document.getElementById('hero-main-title').innerText = dataBlock.heroTitle;
+            if(dataBlock.heroSubtitle) document.getElementById('hero-sub-para').innerText = dataBlock.heroSubtitle;
+            if(dataBlock.heroBg) document.getElementById('hero-canvas-node').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${dataBlock.heroBg}')`;
+            if(dataBlock.heroBtnText) document.getElementById('hero-action-trigger').innerText = dataBlock.heroBtnText;
+            if(dataBlock.servicesTitle) document.getElementById('marketplace-display-title').innerText = dataBlock.servicesTitle;
+            
+            // Footer data sync parameters anchors bindings
+            if(dataBlock.footerHeadline) document.getElementById('foot-brand-label').innerText = dataBlock.footerHeadline;
+            if(dataBlock.footerEmail) {
+                const mailNode = document.getElementById('foot-link-email');
+                mailNode.innerText = dataBlock.footerEmail;
+                mailNode.setAttribute('href', `mailto:${dataBlock.footerEmail}`);
+            }
+            if(dataBlock.footerPhone) {
+                const callNode = document.getElementById('foot-link-call');
+                callNode.innerText = dataBlock.footerPhone;
+                callNode.setAttribute('href', `tel:${dataBlock.footerPhone}`);
+            }
+            if(dataBlock.footerWhatsapp) {
+                const waNode = document.getElementById('foot-link-wa');
+                waNode.innerText = dataBlock.footerWhatsapp;
+                waNode.setAttribute('href', `https://wa.me/${dataBlock.footerWhatsapp.replace(/[^0-9]/g, '')}`);
+            }
+            if(dataBlock.footerAddress) document.getElementById('foot-text-address').innerText = dataBlock.footerAddress;
+            if(dataBlock.copyrightBlock) document.getElementById('foot-text-copy').innerHTML = dataBlock.copyrightBlock;
+
+            renderCatalogCardsMatrixEngine();
+        }
+
+        function renderCatalogCardsMatrixEngine(searchTokenFilter = '') {
+            const rootGrid = document.getElementById('market-cards-grid-root');
+            if(!rootGrid) return;
+            rootGrid.innerHTML = '';
+
+            const inventoryList = RUNTIME_STATE_DATA.catalogArray || [];
+            
+            const filteredArray = inventoryList.filter(item => {
+                const matchesPill = (CURRENT_MARKETPLACE_PILL_FILTER === 'all' || item.type === CURRENT_MARKETPLACE_PILL_FILTER);
+                const matchesSearch = (!searchTokenFilter || 
+                    (item.name || '').toLowerCase().includes(searchTokenFilter.toLowerCase()) || 
+                    (item.desc || '').toLowerCase().includes(searchTokenFilter.toLowerCase()) ||
+                    (item.type || '').toLowerCase().includes(searchTokenFilter.toLowerCase()));
+                return matchesPill && matchesSearch;
+            });
+
+            if(filteredArray.length === 0) {
+                rootGrid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#747d8c; font-weight:600;">No items found matching the selected search parameters matrix context.</div>`;
+                return;
+            }
+
+            filteredArray.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => renderDedicatedProductDetailsPage(item.id);
+
+                let mediaSnippet = `<img src="${escapeHtml(item.img)}" class="product-media" alt="${escapeHtml(item.name)}">`;
+                if(item.img && (item.img.endsWith('.mp4') || item.img.includes('/video/upload/'))) {
+                    mediaSnippet = `<video src="${escapeHtml(item.img)}" class="product-media" autoplay loop muted playsinline></video>`;
+                }
+
+                card.innerHTML = `
+                    <div class="product-image-container">${mediaSnippet}</div>
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">${escapeHtml(item.name)}</div>
+                            <div class="product-price">${escapeHtml(item.price)}</div>
+                        </div>
+                        <button class="buy-btn" onclick="event.stopPropagation(); launchCheckoutProcess('${item.id}')">Order Now</button>
+                    </div>
+                `;
+                rootGrid.appendChild(card);
+            });
+        }
+
+        function navigateToViewState(targetViewMode, optionalFilterParam = null) {
+            // Hot reload state dynamically before navigation to ensure any edits in other tab instantly apply
+            synchronizeApplicationLayerState();
+
+            document.querySelectorAll('.view-state').forEach(el => el.classList.remove('active-view'));
+            document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+            
+            const targetEl = document.getElementById(`view-${targetViewMode}`);
+            if(targetEl) targetEl.classList.add('active-view');
+            
+            const linkAnchor = document.getElementById(`link-view-${targetViewMode}`);
+            if(linkAnchor) linkAnchor.classList.add('active');
+
+            if(targetViewMode === 'marketplace') {
+                if(optionalFilterParam) {
+                    setMarketplacePillFilter(optionalFilterParam);
+                } else {
+                    renderCatalogCardsMatrixEngine();
+                }
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function setMarketplacePillFilter(modeType) {
+            CURRENT_MARKETPLACE_PILL_FILTER = modeType;
+            document.querySelectorAll('.category-filter-row .filter-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            const targetedPill = document.getElementById(`pill-filter-${modeType}`);
+            if(targetedPill) targetedPill.classList.add('active');
+            
+            renderCatalogCardsMatrixEngine();
+        }
+
+        function executeGlobalSearchIndexing() {
+            const queryStr = document.getElementById('sys-search-bar').value;
+            if(queryStr.trim().length > 0) {
+                navigateToViewState('marketplace');
+                renderCatalogCardsMatrixEngine(queryStr);
+            } else {
+                renderCatalogCardsMatrixEngine();
+            }
+        }
+
+        function setupSearchEngineBoundListeners() {
+            window.addEventListener('storage', function(e) {
+                if(e.key === DOMAIN_SHARED_STORAGE_KEY) {
+                    synchronizeApplicationLayerState();
+                }
+            });
+        }
+
+        function renderDedicatedProductDetailsPage(itemId) {
+            const item = RUNTIME_STATE_DATA.catalogArray.find(x => x.id === itemId);
+            if(!item) return;
+
+            navigateToViewState('details');
+            const targetPane = document.getElementById('details-view-root');
+            
+            let displayMediaFrameSnippet = `<img src="${escapeHtml(item.img)}" style="width:100%; height:100%; object-fit:contain;" alt="${escapeHtml(item.name)}">`;
+            if(item.img && (item.img.endsWith('.mp4') || item.img.includes('/video/upload/'))) {
+                displayMediaFrameSnippet = `<video src="${escapeHtml(item.img)}" style="width:100%; height:100%; object-fit:contain;" autoplay loop controls muted></video>`;
+            }
+
+            targetPane.innerHTML = `
+                <div class="details-media-gallery">
+                    <div class="details-main-stage">${displayMediaFrameSnippet}</div>
+                </div>
+                <div class="details-info-pane">
+                    <span class="details-tag">${escapeHtml(item.type)} classification</span>
+                    <h1 class="details-title">${escapeHtml(item.name)}</h1>
+                    <div class="details-price">${escapeHtml(item.price)}</div>
+                    <div class="details-description">${escapeHtml(item.desc) || 'No descriptive technical specifications overview defined for this item node.'}</div>
+                    <button class="cta-btn" style="width:100%; font-size:16px; padding:15px;" onclick="launchCheckoutProcess('${item.id}')">Order Now (Proceed to Specifications Form)</button>
+                </div>
+            `;
+        }
+
+        function triggerGoogleMapsRedirect() {
+            const mappingUrlQuery = encodeURIComponent(RUNTIME_STATE_DATA.footerAddress || "Ajibesin Street, Isale Olupo, Ogidi, Ilorin, Kwara State, Nigeria");
+            window.open(`https://www.google.com/maps/search/?api=1&query=${mappingUrlQuery}`, '_blank');
+        }
+
+        // DISPATCH MECHANISM: ORDER MANAGEMENT MODULES OVERLAY
+        function launchCheckoutProcess(itemId) {
+            const item = RUNTIME_STATE_DATA.catalogArray.find(x => x.id === itemId);
+            if(!item) return;
+
+            IN_FLIGHT_CHECKOUT_RECORD_OBJECT = item;
+            
+            document.getElementById('modal-summary-name').innerText = item.name;
+            document.getElementById('modal-summary-price').innerText = item.price;
+            
+            const thumbRoot = document.getElementById('modal-thumb-box');
+            if(item.img && (item.img.endsWith('.mp4') || item.img.includes('/video/upload/'))) {
+                thumbRoot.innerHTML = `<video src="${escapeHtml(item.img)}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop></video>`;
+            } else {
+                thumbRoot.innerHTML = `<img src="${escapeHtml(item.img)}" style="width:100%; height:100%; object-fit:cover;" alt="Preview">`;
+            }
+
+            const qtyRow = document.getElementById('form-qty-group-toggle');
+            if(item.type === 'service') {
+                qtyRow.style.display = 'none';
+                document.getElementById('form-cust-qty').value = '1';
+            } else {
+                qtyRow.style.display = 'block';
+            }
+
+            document.getElementById('checkout-modal-root').classList.add('active');
+        }
+
+        function closeCheckoutOverlay() {
+            document.getElementById('checkout-modal-root').classList.remove('active');
+            document.getElementById('checkout-form-element').reset();
+            IN_FLIGHT_CHECKOUT_RECORD_OBJECT = null;
+        }
+
+        function dispatchWhatsAppMessagePayload(e) {
+            e.preventDefault();
+            if(!IN_FLIGHT_CHECKOUT_RECORD_OBJECT) return;
+
+            const name = document.getElementById('form-cust-name').value.trim();
+            const phone = document.getElementById('form-cust-phone').value.trim();
+            const email = document.getElementById('form-cust-email').value.trim();
+            const addr = document.getElementById('form-cust-address').value.trim();
+            const state = document.getElementById('form-cust-state').value.trim();
+            const city = document.getElementById('form-cust-city').value.trim();
+            const qty = document.getElementById('form-cust-qty').value;
+            const notes = document.getElementById('form-cust-notes').value.trim();
+
+            const waEndpointTarget = (RUNTIME_STATE_DATA.footerWhatsapp || "09025213498").replace(/[^0-9]/g, '');
+            const modeIsService = (IN_FLIGHT_CHECKOUT_RECORD_OBJECT.type === 'service');
+
+            let bodyStr = `Hello ENY-WISE GRAPHICS AND PRINT,\n\n`;
+            bodyStr += `I'd like to place an order.\n\n`;
+            bodyStr += `Customer Details:\n`;
+            bodyStr += `• Name: ${name}\n`;
+            bodyStr += `• Phone: ${phone}\n`;
+            if(email) bodyStr += `• Email: ${email}\n`;
+            bodyStr += `• Address: ${addr}, ${city}, ${state} State\n\n`;
+            
+            bodyStr += `${modeIsService ? 'Requested Service' : 'Product'}:\n`;
+            bodyStr += `• Name: ${IN_FLIGHT_CHECKOUT_RECORD_OBJECT.name}\n`;
+            if(!modeIsService) bodyStr += `• Quantity: ${qty}\n`;
+            bodyStr += `• Price: ${IN_FLIGHT_CHECKOUT_RECORD_OBJECT.price}\n\n`;
+            
+            bodyStr += `Product Link/Media:\n${IN_FLIGHT_CHECKOUT_RECORD_OBJECT.img}\n\n`;
+            
+            if(notes) {
+                bodyStr += `Additional Note:\n${notes}\n\n`;
+            }
+            bodyStr += `Thank you.`;
+
+            window.open(`https://wa.me/${waEndpointTarget}?text=${encodeURIComponent(bodyStr)}`, '_blank');
+            closeCheckoutOverlay();
+        }
+
+        // AI ASSISTANT OVERLAY COMPONENT EXECUTION PIPELINE
+        function toggleAiAssistantWindow() {
+            const win = document.getElementById('ai-chat-window-root');
+            win.classList.toggle('active');
+            if(win.classList.contains('active')) {
+                document.getElementById('ai-user-prompt-input').focus();
+            }
+        }
+
+        function handleAiInterfaceKeyPress(event) {
+            if(event.key === 'Enter') {
+                processCustomerAiRequest();
+            }
+        }
+
+        async function processCustomerAiRequest() {
+            const inputEl = document.getElementById('ai-user-prompt-input');
+            const prompt = inputEl.value.trim();
+            if(!prompt) return;
+
+            // Display user message in UI
+            appendAiChatMessage(prompt, 'user');
+            inputEl.value = '';
+
+            // Show automated animated typing bubble indicator
+            const typingIndicatorNode = document.createElement('div');
+            typingIndicatorNode.className = 'msg bot typing-container';
+            typingIndicatorNode.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+            const scroller = document.getElementById('ai-messages-scroller-track');
+            scroller.appendChild(typingIndicatorNode);
+            scroller.scrollTop = scroller.scrollHeight;
+
+            const apiKey = RUNTIME_STATE_DATA.groqApiKey || '';
+            
+            // If no token exists, use highly descriptive local heuristic modeling matching catalog metrics
+            if(!apiKey) {
+                setTimeout(() => {
+                    typingIndicatorNode.remove();
+                    const simulatedAnswer = generateHeuristicLocalResponse(prompt);
+                    appendAiChatMessage(simulatedAnswer, 'bot');
+                }, 800);
+                return;
+            }
+
+            // Execute actual request using Llama 4 Scout on Groq platform
+            try {
+                const catalogSnippet = (RUNTIME_STATE_DATA.catalogArray || []).map(x => 
+                    `- ${x.name} (${x.type}): ${x.price}. Description: ${x.desc}`
+                ).join('\n');
+
+                const systemContext = `You are the friendly, professional, automated business assistant for ENY-WISE GRAPHICS AND PRINT, located at ${RUNTIME_STATE_DATA.footerAddress || "Ajibesin Street, Isale Olupo, Ogidi, Ilorin, Kwara State, Nigeria"}.
+Here is our current active inventory catalog:
+${catalogSnippet}
+
+Guidelines:
+1. Provide accurate and concise answers regarding our products, custom creative layout services, and pricing.
+2. Limit your reply to 1-3 highly precise, conversational sentences. Keep it punchy!`;
+
+                const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "meta-llama/llama-4-scout-17b-16e-instruct", // Utilizing Meta's state-of-the-art multimodal model on Groq
+                        messages: [
+                            { role: "system", content: systemContext },
+                            { role: "user", content: prompt }
+                        ],
+                        temperature: 0.6,
+                        max_tokens: 180
+                    })
+                });
+
+                typingIndicatorNode.remove();
+
+                if(res.ok) {
+                    const data = await res.json();
+                    const aiMsg = data.choices[0].message.content.trim();
+                    appendAiChatMessage(aiMsg, 'bot');
+                } else {
+                    const fallbackSimulated = generateHeuristicLocalResponse(prompt);
+                    appendAiChatMessage(`${fallbackSimulated} *(Local fallback active: Groq API returned error status ${res.status})*`, 'bot');
+                }
+            } catch(e) {
+                typingIndicatorNode.remove();
+                const fallbackSimulated = generateHeuristicLocalResponse(prompt);
+                appendAiChatMessage(`${fallbackSimulated} *(Local fallback active: network error caught)*`, 'bot');
+            }
+        }
+
+        function generateHeuristicLocalResponse(prompt) {
+            const lowerPrompt = prompt.toLowerCase();
+            const catalog = RUNTIME_STATE_DATA.catalogArray || [];
+            
+            // Core Contact Channels Context
+            if(lowerPrompt.includes('contact') || lowerPrompt.includes('call') || lowerPrompt.includes('whatsapp') || lowerPrompt.includes('phone') || lowerPrompt.includes('email')) {
+                return `You can reach out directly to ENY-WISE via call at ${RUNTIME_STATE_DATA.footerPhone || "08149830278"} or send us a WhatsApp message at ${RUNTIME_STATE_DATA.footerWhatsapp || "09025213498"}. You can also email us at ${RUNTIME_STATE_DATA.footerEmail || "enywise652@gmail.com"}.`;
+            }
+            
+            // Core Location Queries
+            if(lowerPrompt.includes('where') || lowerPrompt.includes('location') || lowerPrompt.includes('address') || lowerPrompt.includes('office') || lowerPrompt.includes('state')) {
+                return `Our main operations building is located at ${RUNTIME_STATE_DATA.footerAddress || "Ajibesin Street, Isale Olupo, Ogidi, Ilorin, Kwara State, Nigeria"}.`;
+            }
+
+            // Match products from the live local database schema dynamically
+            for (let item of catalog) {
+                if(lowerPrompt.includes(item.name.toLowerCase()) || (item.desc && lowerPrompt.includes(item.desc.toLowerCase()))) {
+                    return `Our "${item.name}" is listed for ${item.price}. Here's what it features: ${item.desc || "A premium offering crafted to elevate your business layout profile."}`;
+                }
+            }
+
+            // General fallbacks
+            return `I am happy to assist with your custom print inquiries! We currently offer high-quality flyer printing, corporate logo designs, brand asset customization, and more. Try browsing our "Marketplace" tab to view details on our latest offerings.`;
+        }
+
+        function appendAiChatMessage(msgText, senderClass) {
+            const trackingNode = document.getElementById('ai-messages-scroller-track');
+            const element = document.createElement('div');
+            element.className = `msg ${senderClass}`;
+            element.innerText = msgText;
+            trackingNode.appendChild(element);
+            trackingNode.scrollTop = trackingNode.scrollHeight;
+        }
+    </script>
+</body>
+</html>
